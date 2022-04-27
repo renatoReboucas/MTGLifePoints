@@ -4,11 +4,12 @@
     "slug": "snack-9744371e-9ab5-401a-87e2-4ae4d1a7e17a",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/playstore.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#2c3e50"
+      //  "resizeMode": "cover"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -23,7 +24,9 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.renatoreboucas.mtgconterpoints",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"

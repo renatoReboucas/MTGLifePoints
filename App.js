@@ -3,9 +3,9 @@ import {
   Text,
   View,
   StyleSheet,
-  ScrollView,
   SafeAreaView,
   FlatList,
+  Platform,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Constants from "expo-constants";
@@ -20,13 +20,20 @@ export default function App() {
   const [sliderValue, setSliderValue] = React.useState(3);
   const [sliderTextValue, setSliderTextValue] = React.useState("#2d3436");
   const [countCardPoints, setCountCardPoints] = React.useState("");
+  const [state, setState] = React.useState({ open: false });
+
+  const onStateChange = ({ open }) => setState({ open });
+
+  const { open } = state;
+
+  const margin = Platform.OS === "ios" ? 30 : 0;
 
   const valueCountCardPoints = [
-    { id: 1, value: 20, color: "#0984e3" },
-    { id: 2, value: 20, color: "#c0392b" },
-    { id: 3, value: 20, color: "#c0392b" },
-    { id: 4, value: 20, color: "#c0392b" },
-    { id: 5, value: 20, color: "#c0392b" },
+    { id: 1, value: 20, color: "#0984e3", name: "" },
+    { id: 2, value: 20, color: "#c0392b", name: "" },
+    // { id: 3, value: 20, color: "#c0392b", name: "" },
+    // { id: 4, value: 20, color: "#c0392b", name: "" },
+    // { id: 5, value: 20, color: "#c0392b", name: "" },
   ];
 
   React.useEffect(() => {
@@ -80,10 +87,44 @@ export default function App() {
     setCountCardPoints(valeuCard);
   };
 
+  const handlerAddCard = () => {
+    let data = countCardPoints;
+    let padrao = [
+      {
+        id: data.length + 1,
+        value: 20,
+        color: "#c0392b",
+        name: "",
+      },
+    ];
+    data = [...data, ...padrao];
+    setCountCardPoints(data);
+  };
+
+  const handlerRemoveCard = () => {
+    let data = countCardPoints;
+    data = data.slice(0, -1);
+    data = [...data];
+    setCountCardPoints(data);
+  };
+
+  const handlerReloadPoints = () => {
+    let data = countCardPoints;
+    let valeuCard = countCardPoints.map((item) => {
+      if (item.points) {
+        item.points = 20;
+      } else {
+        return item;
+      }
+      return item;
+    });
+    setCountCardPoints(valeuCard);
+  };
+
   return (
     <>
       <SafeAreaView style={{ flex: 1, backgroundColor: "#2c3e50" }}>
-        <View>
+        <View style={{ marginTop: 30 }}>
           <FlatList
             data={countCardPoints}
             horizontal={false}
@@ -102,13 +143,43 @@ export default function App() {
             }}
           />
         </View>
-        <FAB
+        {/* <FAB
           style={styles.fab}
           small
-          icon="plus"
+          icon="dots-vertical"
           color="white"
           onPress={() => console.log("Pressed")}
-        />
+        /> */}
+
+        <Provider>
+          <Portal>
+            <FAB.Group
+              open={open}
+              icon={open ? "dots-vertical" : "dots-vertical"}
+              color="white"
+              actions={[
+                {
+                  style: { backgroundColor: "#eb2f06" },
+                  icon: "trash-can",
+                  onPress: () => handlerRemoveCard(),
+                },
+                {
+                  style: { backgroundColor: "#f1c40f" },
+                  icon: "reload",
+                  onPress: () => handlerReloadPoints(),
+                },
+                {
+                  style: { backgroundColor: "#78e08f" },
+                  icon: "account-plus",
+                  onPress: () => handlerAddCard(),
+                },
+              ]}
+              onStateChange={onStateChange}
+              // onPress={() => {}}
+            />
+          </Portal>
+        </Provider>
+
         <Provider>
           <Portal>
             <Modal
@@ -129,9 +200,6 @@ export default function App() {
               />
             </Modal>
           </Portal>
-          {/* <Button style={{ marginTop: 30 }} onPress={handleShowModalPalette}>
-          Show
-        </Button> */}
         </Provider>
       </SafeAreaView>
     </>
@@ -141,7 +209,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
     justifyContent: "center",
     paddingTop: Constants.statusBarHeight,
     backgroundColor: "#2c3e50",
@@ -154,8 +221,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#e74c3c",
   },
   containerBlock: {
-    // backgroundColor: 'red',
-    // flexDirection:'row',
     flex: 1,
     justifyContent: "space-around",
     flexWrap: "wrap",
@@ -165,9 +230,6 @@ const styles = StyleSheet.create({
     width: 50,
     marginLeft: 10,
     marginRight: 10,
-    // alignItems: 'center',
-    // justifyContent: 'center',
-    // textAlign: 'center'
   },
   containerCard: {
     flexDirection: "row",

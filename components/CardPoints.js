@@ -15,6 +15,23 @@ export default function CardPoints({
   minusButton,
   plusButton,
 }) {
+  const [name, setName] = React.useState("");
+  const [counterpoints, setCounterPoints] = React.useState(20);
+
+  const handlerPoints = (points) => {
+    console.log(points);
+    if (!points) {
+      return;
+    } else {
+      setCounterPoints(points);
+      handlerPoints(points);
+    }
+  };
+
+  // React.useEffect(() => {
+  //   setCounterPoints(points.points);
+  // }, []);
+
   return (
     <>
       <View
@@ -25,8 +42,42 @@ export default function CardPoints({
           justifyContent: "center",
           alignItems: "center",
           flexDirection: "row",
+          flexWrap: "wrap",
+          borderWidth: 1,
         }}
       >
+        <View style={{ marginTop: 60, flexDirection: "row", flexWrap: "wrap" }}>
+          <IconButton
+            compact={true}
+            style={styles.colorButton}
+            icon="minus"
+            color="red"
+            onPress={() => minusButton(points.value--, points.id)}
+          />
+          <TextInput
+            mode="outlined"
+            value={
+              points.points == undefined ? String(20) : String(points.points)
+            }
+            style={styles.input}
+            placeholder="20"
+            onChangeText={(text) => handlerPoints(text)}
+          />
+          <IconButton
+            compact={true}
+            style={styles.colorButton}
+            icon="plus"
+            color="red"
+            onPress={() => plusButton(points.value++, points.id)}
+          />
+          <TextInput
+            mode="outlined"
+            value={name}
+            style={styles.inputName}
+            placeholder="Nome do Planeswalker"
+            onChangeText={(text) => setName(text)}
+          />
+        </View>
         <FAB
           style={styles.fab}
           small
@@ -34,46 +85,7 @@ export default function CardPoints({
           color="white"
           onPress={() => showModalPalette(true, points.id)}
         />
-        <IconButton
-          compact={true}
-          style={styles.colorButton}
-          icon="minus"
-          color="red"
-          onPress={() => minusButton(points.value--, points.id)}
-        />
-        <TextInput
-          value={String(points.value)}
-          style={styles.input}
-          onChangeText={(text) => alterPoints(text)}
-        />
-        <IconButton
-          compact={true}
-          style={styles.colorButton}
-          icon="plus"
-          color="red"
-          onPress={() => plusButton(points.value++, points.id)}
-        />
-        {/* <Slider
-          value={3}
-          minimumValue={1}
-          maximumValue={5}
-          step={1}
-          trackClickable={true}
-        /> */}
       </View>
-      {/* <View
-        style={[
-          {
-            backgroundColor: "#c0392b",
-            height: 200,
-            width: "50%",
-            justifyContent: "center",
-            alignItems: "center",
-          },
-        ]}
-      >
-        <TextInput value={points} style={styles.input} />
-      </View> */}
     </>
   );
 }
@@ -86,9 +98,6 @@ const styles = StyleSheet.create({
     marginRight: 10,
     borderColor: "#000",
     backgroundColor: "#d2dae2",
-    // alignItems: 'center',
-    // justifyContent: 'center',
-    // textAlign: 'center'
   },
   containerCard: {
     flexDirection: "row",
@@ -98,7 +107,14 @@ const styles = StyleSheet.create({
   },
   fab: {
     position: "absolute",
-    margin: 16,
+    margin: 8,
+    right: 0,
+    bottom: 0,
+  },
+  inputName: {
+    marginTop: 10,
+    height: 40,
+    width: "100%",
     right: 0,
     bottom: 0,
   },
