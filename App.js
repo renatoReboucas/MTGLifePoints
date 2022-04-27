@@ -1,0 +1,183 @@
+import * as React from "react";
+import {
+  Text,
+  View,
+  StyleSheet,
+  ScrollView,
+  SafeAreaView,
+  FlatList,
+} from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import Constants from "expo-constants";
+import { FAB, Modal, Portal, Button, Provider } from "react-native-paper";
+import { Slider } from "@miblanchard/react-native-slider";
+
+import CardPoints from "./components/CardPoints";
+
+export default function App() {
+  const [visible, setVisible] = React.useState(false);
+  const [cardId, setCardId] = React.useState("");
+  const [sliderValue, setSliderValue] = React.useState(3);
+  const [sliderTextValue, setSliderTextValue] = React.useState("#2d3436");
+  const [countCardPoints, setCountCardPoints] = React.useState("");
+
+  const valueCountCardPoints = [
+    { id: 1, value: 20, color: "#0984e3" },
+    { id: 2, value: 20, color: "#c0392b" },
+    { id: 3, value: 20, color: "#c0392b" },
+    { id: 4, value: 20, color: "#c0392b" },
+    { id: 5, value: 20, color: "#c0392b" },
+  ];
+
+  React.useEffect(() => {
+    setCountCardPoints(valueCountCardPoints);
+  }, []);
+
+  const showModal = () => setVisible(true);
+  const hideModal = () => setVisible(false);
+  const containerStyle = { backgroundColor: "white", padding: 20 };
+
+  function handleShowModalPalette(show, id) {
+    show ? showModal() : "";
+    setCardId(id);
+  }
+
+  const handlerColorText = (value) => {
+    setSliderValue(value);
+    if (value == 1) {
+      setSliderTextValue("#c0392b");
+    } else if (value == 2) {
+      setSliderTextValue("#0984e3");
+    } else if (value == 3) {
+      setSliderTextValue("#2d3436");
+    } else if (value == 4) {
+      setSliderTextValue("#dfe6e9");
+    } else if (value == 5) {
+      setSliderTextValue("#2ecc71");
+    }
+    let oldValues = countCardPoints;
+    let valeuCard = oldValues.map((item) => {
+      if (item.id === cardId) {
+        item.color = sliderTextValue;
+        return item;
+      }
+    });
+    // setCountCardPoints({ ...countCardPoints, valeuCard });
+  };
+  const handlerValueInput = (value) => {
+    console.log(value);
+  };
+  const HandlerPressButton = (value, id) => {
+    let data = countCardPoints;
+    let valeuCard = countCardPoints.map((item) => {
+      if (item.id === id) {
+        item.points = value;
+      } else {
+        return item;
+      }
+      return item;
+    });
+    setCountCardPoints(valeuCard);
+  };
+
+  return (
+    <>
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#2c3e50" }}>
+        <View>
+          <FlatList
+            data={countCardPoints}
+            horizontal={false}
+            numColumns="2"
+            keyExtractor={(card) => String(card.id)}
+            renderItem={({ item, index }) => {
+              return (
+                <CardPoints
+                  points={item}
+                  alterPoints={handlerValueInput}
+                  minusButton={HandlerPressButton}
+                  plusButton={HandlerPressButton}
+                  showModalPalette={handleShowModalPalette}
+                />
+              );
+            }}
+          />
+        </View>
+        <FAB
+          style={styles.fab}
+          small
+          icon="plus"
+          color="white"
+          onPress={() => console.log("Pressed")}
+        />
+        <Provider>
+          <Portal>
+            <Modal
+              visible={visible}
+              onDismiss={hideModal}
+              contentContainerStyle={containerStyle}
+            >
+              <Text style={[{ color: sliderTextValue }, styles.textSlider]}>
+                Cor
+              </Text>
+              <Slider
+                value={sliderValue}
+                minimumValue={1}
+                maximumValue={5}
+                step={1}
+                trackClickable={true}
+                onValueChange={(value) => handlerColorText(value)}
+              />
+            </Modal>
+          </Portal>
+          {/* <Button style={{ marginTop: 30 }} onPress={handleShowModalPalette}>
+          Show
+        </Button> */}
+        </Provider>
+      </SafeAreaView>
+    </>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+
+    justifyContent: "center",
+    paddingTop: Constants.statusBarHeight,
+    backgroundColor: "#2c3e50",
+  },
+  fab: {
+    position: "absolute",
+    margin: 16,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "#e74c3c",
+  },
+  containerBlock: {
+    // backgroundColor: 'red',
+    // flexDirection:'row',
+    flex: 1,
+    justifyContent: "space-around",
+    flexWrap: "wrap",
+  },
+  input: {
+    height: 50,
+    width: 50,
+    marginLeft: 10,
+    marginRight: 10,
+    // alignItems: 'center',
+    // justifyContent: 'center',
+    // textAlign: 'center'
+  },
+  containerCard: {
+    flexDirection: "row",
+  },
+  colorButton: {
+    backgroundColor: "white",
+  },
+  textSlider: {
+    textAlign: "center",
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+});
