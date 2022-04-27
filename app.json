@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "mtgconterpoints",
+    "name": "MTGLifePoints",
     "slug": "snack-9744371e-9ab5-401a-87e2-4ae4d1a7e17a",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -9,7 +9,6 @@
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#2c3e50"
-      //  "resizeMode": "cover"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
